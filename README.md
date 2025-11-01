@@ -26,6 +26,7 @@ python mnt/data/capture_and_send.py --webhook "https://seu-webhook.n8n.cloud/web
 - `--region`: (opcional) região a capturar em pixels: `LEFT TOP WIDTH HEIGHT`.
 - `--cooldown`: (opcional) atraso em segundos antes da captura, útil para preparar a tela.
 - `--image`: nome do arquivo de saída para a captura (padrão `screenshot.png`).
+- `--show`: abre a captura no visualizador padrão do sistema após salvá-la.
 - `--dry-run`: executa a captura e OCR, mas não envia dados ao webhook.
 
 Ao finalizar, o script exibirá o texto bruto reconhecido, o número detectado e, se configurado, enviará os dados para o webhook informado.

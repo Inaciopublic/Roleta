@@ -3,6 +3,7 @@ import re
 import sys
 import time
 import argparse
+import subprocess
 import requests
 
 try:
@@ -53,6 +54,20 @@ def post_to_webhook(webhook_url, value, meta=None, timeout=10):
     return {"status_code": response.status_code}
 
 
+def open_image(image_path):
+    """Open the captured image using the default viewer for the platform."""
+    try:
+        if sys.platform.startswith("win"):
+            os.startfile(image_path)  # type: ignore[attr-defined]
+        elif sys.platform == "darwin":
+            subprocess.run(["open", image_path], check=False)
+        else:
+            subprocess.run(["xdg-open", image_path], check=False)
+        print(f"Visualizando captura: {image_path}")
+    except Exception as exc:
+        print(f"Não foi possível abrir a imagem automaticamente: {exc}")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Capture screen, OCR numbers, send to n8n webhook."
@@ -81,6 +96,9 @@ def main():
     parser.add_argument(
         "--dry-run", action="store_true", help="Only print OCR result, do not POST"
     )
+    parser.add_argument(
+        "--show", action="store_true", help="Open the captured image with the default viewer"
+    )
     args = parser.parse_args()
 
     if not args.webhook and not args.dry_run:
@@ -107,6 +125,9 @@ def main():
         "region": region,
         "platform": sys.platform,
     }
+
+    if args.show:
+        open_image(path)
 
     if not args.dry_run and value:
         try:
